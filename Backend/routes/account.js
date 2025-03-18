@@ -1,5 +1,5 @@
 const express = require("express");
-const mongoose = require("mongoose");
+const {default: mongoose} = require("mongoose");
 const {authMiddleware} = require("../middleware")
 const { Account } = require("../db");
 
@@ -13,7 +13,7 @@ router.get('/balance',authMiddleware, async (req,res)=>{
         balance: account.balance
     })
 })
-router.post('/transfer',async (req,res)=>{
+router.post('/transfer',authMiddleware,async (req,res)=>{
     const session = await mongoose.startSession();
     session.startTransaction();
     const { amount, to } = req.body;

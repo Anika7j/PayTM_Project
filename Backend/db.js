@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-mongoose.connect('mongodb+srv://anikajain1307:eSnwH8kyBn7XUeUb@cluster0.aipq7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+mongoose.connect('mongodb+srv://anikajain1307:uamtOyn9RZt8JsdA@cluster0.aipq7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 
 
 const UserSchema = new Schema({
     username: {type:String,required:true},
     firstName: {type:String,required:true},
-    lastName: String,
+    lastName: {type:String},
     Password: {type:String,required:true}
 })
 const AccountSchema = new Schema({

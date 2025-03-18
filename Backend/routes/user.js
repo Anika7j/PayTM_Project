@@ -1,17 +1,27 @@
 const express = require("express");
-const {creatUser, signin,updateUser} = require("../types");
+
 const {User,Account} = require("../db");
-const app = express();
 const jwt = require("jsonwebtoken");
 const {JWT_SECRET} = require("../config");
 const { authMiddleware } = require("../middleware");
 const router = express.Router();
+const zod = require('zod');
+
+const createUser = zod.object({
+    username: zod.string().min(1).max(50),
+    firstname: zod.string(),
+    lastname: zod.string(),
+    password: zod.string().min(8),
+})
+
+
 
 router.post('/signup',async function(req,res){
     
+    
     const newUser = req.body;
     
-    if(!creatUser.safeParse(newUser)){
+    if(!createUser.safeParse(newUser)){
         res.status(411).json({
             message: "User already exists / Incorrect inputs",
         })
@@ -29,30 +39,35 @@ router.post('/signup',async function(req,res){
         username: newUser.username,
         firstName: newUser.firstName,
         lastName: newUser.lastName,
-        Password: creatUser.Password
+        Password: newUser.password
 
     })
     const userId = user._id;
 
     await Account.create({
         userId,
-        balance: 1 + Math.random*10000
+        balance: 1 + Math.random()*10000
     })
 
     const token = jwt.sign({
         userId
     },JWT_SECRET);
+
     res.json({
         message: "User created successfully",
         token: token
     })
 
-    
-
-
 })
 
-router.post('/signin', async function(req,res,next) {
+
+
+const signin = zod.object({
+    username: zod.string(),
+    password: zod.string(),
+})
+
+router.post('/signin', async function(req,res) {
     const validUser = req.body;
     if(!signin.safeParse(validUser)){
         res.status(411).json({
@@ -73,15 +88,22 @@ router.post('/signin', async function(req,res,next) {
         })
     }
 })
+
+const updateUser = zod.object({
+    password: zod.string().optional(),
+    firstname: zod.string().optional(),
+    lastname: zod.string().optional(),
+})
+
 router.put('/',authMiddleware,async(req,res)=>{
-    const user = updateUser(req.body)
+    const user = updateUser.safeParse(req.body)
     if(!user){
         res.status(411).json({
             message: "Error while updating information"
         })
     }
     await User.updateOne(req.body,{
-        _id: req.userId
+        id: req.userId
     })
     res.json({
         message: "Updated successfully"
@@ -93,11 +115,11 @@ router.get('/bulk',async(req,res)=>{
     const users = await User.find({
         $or:[{
             firstName: {
-                $regex: person
+                "$regex": person
             }
         },{
             lastName:{
-                $regex: person
+                "$regex": person
             }
         }]
     })
