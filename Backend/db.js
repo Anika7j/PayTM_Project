@@ -1,7 +1,15 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-mongoose.connect('mongodb+srv://anikajain1307:uamtOyn9RZt8JsdA@cluster0.aipq7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+mongoose.connect('mongodb+srv://anikajain1307:05OV6yBWzm2kVnPx@cluster0.aipq7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+
+
+
+let db = mongoose.connection;
+
+db.once('open', () => console.log('connected to the database'));
+
+
 
 
 const UserSchema = new Schema({
