@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-mongoose.connect('mongodb+srv://anikajain1307:05OV6yBWzm2kVnPx@cluster0.aipq7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+mongoose.connect('Enter your key')
 
 
 
